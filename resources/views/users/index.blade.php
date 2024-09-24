@@ -11,6 +11,6 @@
     @vite('resources/react/app.tsx')
 </head>
 <body>
-<div id="app"></div>
+<div id="app" ></div>
 </body>
 </html>
