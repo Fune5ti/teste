@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('users.index');
+Route::group(['prefix' => '/users', 'as' => 'users.'], function () {
+    Route::get('/list', [UserController::class, 'index'])->name('index');
 });
