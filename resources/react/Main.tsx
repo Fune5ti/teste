@@ -4,17 +4,18 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ActionButton from "./components/ActionButton";
 import CreateUserModal from "./components/CreateUserModal";
-import {createUser, deleteUser, getUsers} from "./services/requests";
+import {createUser, deleteUser, getUsers, updateUser} from "./services/requests";
 import {ToastContainer} from "react-toastify";
 import Button from "./components/Button";
+import {ICreateUser, User} from "./types/User";
 
 function Main() {
     const [rowData, setRowData] = useState([]);
     const [colDefs, setColDefs] = useState([
-        {field: "id", headerName: "ID", flex: 1},
-        {field: "name", headerName: "Nome", flex: 1},
-        {field: "username", headerName: "Nome de utilizador", flex: 1},
-        {field: "email", headerName: "Email", flex: 1},
+        {field: "id", headerName: "ID", flex: 1, filter: true},
+        {field: "name", headerName: "Nome", flex: 1, filter: true},
+        {field: "username", headerName: "Nome de utilizador", flex: 1, filter: true},
+        {field: "email", headerName: "Email", flex: 1, filter: true},
         {
             headerName: "Actions",
             field: "actions",
@@ -28,7 +29,7 @@ function Main() {
         },
     ]);
     const [openCreateModal, setOpenCreateModal] = useState(false);
-
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const openModal = () => {
         setOpenCreateModal(true);
     };
@@ -44,9 +45,17 @@ function Main() {
     };
 
     const handleEdit = (user) => {
-        // Logic for handling edit (e.g., opening a modal with the user data)
-        console.log("Edit user:", user);
+        setSelectedUser(user);
+        openModal();
     };
+
+    const dispatchEditRequest = (data: ICreateUser) => {
+        updateUser(selectedUser.id, data).then((responseData) => {
+            if (responseData.user) {
+                reloadTasks();
+            }
+        });
+    }
     useEffect(() => {
         getUsers().then((data) => {
             setRowData(data.users);
@@ -80,14 +89,22 @@ function Main() {
                         rowData={rowData}
                         columnDefs={colDefs}
                         rowHeight={60}
+                        pagination={true}
+                        paginationPageSize={10}
+                        paginationPageSizeSelector={[10, 20, 30]}
                     />
                 </div>
             </div>
             {openCreateModal && (
                 <CreateUserModal
                     onClose={closeModal}
+                    user={selectedUser}
                     onSubmit={(data) => {
-                        handleCreateUser(data)
+                        if (selectedUser) {
+                            dispatchEditRequest(data)
+                        } else {
+                            handleCreateUser(data)
+                        }
                     }}
                 />
             )}

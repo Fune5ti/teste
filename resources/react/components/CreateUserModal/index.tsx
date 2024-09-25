@@ -1,12 +1,13 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {ICreateUser} from "../../types/User";
 
 interface props {
     onClose: () => void;
     onSubmit: (data: ICreateUser) => void;
+    user?: ICreateUser | null;
 }
 
-function CreateUserModal({onClose, onSubmit}: props) {
+function CreateUserModal({onClose, onSubmit, user}: props) {
     const [data, setData] = useState<ICreateUser>({
         name: '',
         username: '',
@@ -15,18 +16,28 @@ function CreateUserModal({onClose, onSubmit}: props) {
         password_confirmation: '',
     });
 
+    useEffect(() => {
+        if (user) {
+            setData({
+                name: user.name || '',
+                username: user.username || '',
+                email: user.email || '',
+                password: '',
+                password_confirmation: '',
+            });
+        }
+    }, [user]);
+
     return (
         <div>
             <div
                 className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-gray-700 bg-opacity-75">
                 <div className="relative p-4 w-full max-w-2xl h-auto">
-                    {/* Modal content */}
                     <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
-                        {/* Modal header */}
                         <div
                             className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                Criar novo Usuario
+                                {user ? 'Editar Usuário' : 'Criar Novo Usuário'}
                             </h3>
                             <button
                                 type="button"
@@ -49,8 +60,6 @@ function CreateUserModal({onClose, onSubmit}: props) {
                                 <span className="sr-only">Close modal</span>
                             </button>
                         </div>
-
-                        {/* Modal body */}
                         <form>
                             <div className="grid gap-4 mb-4 sm:grid-cols-2">
                                 <div>
@@ -64,6 +73,7 @@ function CreateUserModal({onClose, onSubmit}: props) {
                                         type="text"
                                         name="name"
                                         onChange={(e) => setData({...data, name: e.target.value})}
+                                        value={data.name}
                                         id="name"
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         placeholder="Escreva o nome"
@@ -81,6 +91,7 @@ function CreateUserModal({onClose, onSubmit}: props) {
                                         type="text"
                                         name="username"
                                         onChange={(e) => setData({...data, username: e.target.value})}
+                                        value={data.username}
                                         id="username"
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         placeholder="Nome de Usuario"
@@ -93,8 +104,10 @@ function CreateUserModal({onClose, onSubmit}: props) {
                                         Password</label>
                                     <input type="password" name="password" id="password" placeholder="••••••••"
                                            onChange={(e) => setData({...data, password: e.target.value})}
+                                           value={data.password}
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                           required/>
+                                           required={!user}
+                                    />
                                 </div>
                                 <div>
                                     <label htmlFor="password_confirmation"
@@ -103,8 +116,10 @@ function CreateUserModal({onClose, onSubmit}: props) {
                                     <input type="password" name="password_confirmation"
                                            id="password_confirmation" placeholder="••••••••"
                                            onChange={(e) => setData({...data, password_confirmation: e.target.value})}
+                                           value={data.password_confirmation}
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                           required/>
+                                           required={!user}
+                                    />
                                 </div>
                                 <div>
                                     <label
@@ -118,6 +133,7 @@ function CreateUserModal({onClose, onSubmit}: props) {
                                         name="Email"
                                         id="Email"
                                         onChange={(e) => setData({...data, email: e.target.value})}
+                                        value={data.email}
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         placeholder="Email"
                                         required
@@ -128,8 +144,8 @@ function CreateUserModal({onClose, onSubmit}: props) {
                             </div>
                             <button
                                 onClick={() => {
-                                    onSubmit(data)
-                                    onClose()
+                                    onSubmit(data);
+                                    onClose();
                                 }}
                                 className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-900 dark:hover:bg-gray-950 dark:focus:ring-primary-800"
                             >
@@ -145,7 +161,7 @@ function CreateUserModal({onClose, onSubmit}: props) {
                                         clipRule="evenodd"
                                     ></path>
                                 </svg>
-                                Confirmar
+                                {user ? 'Atualizar' : 'Confirmar'}
                             </button>
                         </form>
                     </div>

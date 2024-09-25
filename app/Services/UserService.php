@@ -21,11 +21,17 @@ class UserService
     {
          return User::create($data);
     }
-    public function update(int $id, $data): void
+    public function update(int $id, array $data): void
     {
         $user = $this->getById($id);
-        $user->update($data);
+
+        $filteredData = array_filter($data, function ($value) {
+            return !is_null($value);
+        });
+
+        $user->update($filteredData);
     }
+
 
     public function delete(int $id): void
     {

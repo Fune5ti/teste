@@ -5,3 +5,8 @@ export interface ICreateUser {
     password: string;
     password_confirmation: string;
 }
+export interface User extends ICreateUser {
+    id: number;
+    created_at: string;
+    updated_at: string;
+}

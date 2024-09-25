@@ -1,5 +1,5 @@
 import api from './api';
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import {ICreateUser} from "../types/User";
 import {AxiosError} from "axios";
 
@@ -16,20 +16,20 @@ export const getUsers = async () => {
         return [];
     }
 }
-export const createUser = async (data:ICreateUser) => {
+export const createUser = async (data: ICreateUser) => {
     try {
         const response = await api.post('/users', data);
-        toast.success('User created successfully');
+        toast.success('Usuario criado com sucesso');
         return response.data;
     } catch (error) {
         const message = getErrorMessage(error);
-        toast.error(message || 'Failed to create user');
+        toast.error(message || 'Falha ao criar usuario');
         return null;
     }
 };
 export const getUser = async (id: number) => {
     if (!id) {
-        toast.error("User ID is required!");
+        toast.error("Id do usuario é obrigatório!");
         return;
     }
     try {
@@ -42,14 +42,14 @@ export const getUser = async (id: number) => {
 }
 
 // @ts-ignore
-export const deleteUser = async(id: number) => {
+export const deleteUser = async (id: number) => {
     if (!id) {
-        toast.error("User ID is required!");
+        toast.error("Id do usuario é obrigatório!");
         return;
     }
     try {
         await api.delete('/users/' + id);
-        toast.success('User deleted successfully');
+        toast.success('Usuario deletado com sucesso');
     } catch (error) {
         toast.error(getErrorMessage(error));
     }
@@ -61,7 +61,7 @@ export const updateUser = async (id: number, data: ICreateUser) => {
     }
     try {
         const response = await api.put('/users/' + id, data);
-        toast.success('User updated successfully');
+        toast.success('Usuario atualizado com sucesso');
         return response.data;
     } catch (error) {
         toast.error(getErrorMessage(error));
