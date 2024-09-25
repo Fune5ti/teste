@@ -51,7 +51,7 @@ function Main() {
 
     const dispatchEditRequest = (data: ICreateUser) => {
         updateUser(selectedUser.id, data).then((responseData) => {
-            if (responseData.user) {
+            if (responseData.success) {
                 reloadTasks();
             }
         });
