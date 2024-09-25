@@ -3,6 +3,6 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => '/', 'as' => 'users.'], function () {
-    Route::get('/', [UserController::class, 'index'])->name('index');
+Route::group(['prefix' => '/users', 'as' => 'users.'], function () {
+    Route::get('/list', [UserController::class, 'index'])->name('index');
 });
